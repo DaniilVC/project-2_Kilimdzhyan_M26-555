@@ -4,10 +4,11 @@ version = "0.1.0"
 description = "Primitive database for homework"
 readme = "README.md"
 authors = [
-    { name = "Mr1ter", email = "daniilvercetti@outlook.com" }
+    { name = "Daniil K.", email = "daniilvercetti@outlook.com" }
 ]
 requires-python = ">=3.12"
 dependencies = [
+    "prettytable>=3.18.0",
     "prompt>=0.4.1",
 ]
 
