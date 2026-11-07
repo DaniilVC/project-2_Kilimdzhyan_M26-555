@@ -2,7 +2,7 @@
 from .engine import welcome
 
 
-def main():
+def main() -> None:
     print("DB project is running!")
     welcome()
 

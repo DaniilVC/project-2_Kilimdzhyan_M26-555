@@ -1,11 +1,27 @@
 import prompt
 
 
-def welcome():
+def show_help() -> None:
     print("<command> exit - выйти из программы")
     print("<command> help - справочная информация")
-    prompt.string("Введите команду: ")
-    return welcome()
 
-if __name__ == '__main__':
-    welcome()
+def welcome() -> None:
+    """
+    Запускает приветственный экран и цикл обработки команд.
+    """
+    print("Первая попытка запустить проект!\n\n***")
+    show_help()
+    while True:
+            try:
+                _command = prompt.string("Введите команду: ").strip()
+            except (EOFError, KeyboardInterrupt):
+                print("\nЗавершение работы программы.")
+                break
+            
+            match _command:
+                case "exit":
+                    break
+                case "help":
+                    show_help()
+                case _:
+                    pass
