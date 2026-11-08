@@ -57,3 +57,17 @@ def list_tables(metadata: dict) -> None:
 
     for _table_name in metadata:
         print(f"- {_table_name}")
+
+def info(metadata: dict, table_name: str, table_data: list[dict]) -> None:
+    """Выводит информацию о таблице."""
+    if table_name not in metadata:
+        print(f'Ошибка: Таблица "{table_name}" не существует.')
+        return
+
+    _columns = metadata[table_name]["columns"]
+    _columns_str = ", ".join(f"{_n}:{_t}" for _n, _t in _columns.items())
+
+    print(f"Таблица: {table_name}")
+    print(f"Столбцы: {_columns_str}")
+    print(f"Количество записей: {len(table_data)}")
+
