@@ -117,3 +117,7 @@
 
 >>> drop_table users
 Таблица "users" успешно удалена.
+
+---
+
+### Аскинема: https://asciinema.org/a/9VuEmZ3ecffuFpTf
