@@ -1,3 +1,4 @@
+# src/primitive_db/parser.py
 SUPPORTED_TYPES = {"int", "str", "bool"}
 
 
