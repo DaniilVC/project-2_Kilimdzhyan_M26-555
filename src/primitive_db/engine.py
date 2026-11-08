@@ -4,6 +4,7 @@ import shlex
 import prompt
 from prettytable import PrettyTable
 
+from .constants import DB_META_FILE
 from .core import (
     create_table,
     delete,
@@ -16,8 +17,6 @@ from .core import (
 )
 from .parser import parse_condition
 from .utils import load_metadata, load_table_data, save_metadata, save_table_data
-
-DB_META_FILE = "db_meta.json"
 
 
 def print_help() -> None:

@@ -1,7 +1,4 @@
 # src/primitive_db/parser.py
-SUPPORTED_TYPES = {"int", "str", "bool"}
-
-
 def cast_value(_value: str, _type: str):
     """
     Приводит строку к нужному типу

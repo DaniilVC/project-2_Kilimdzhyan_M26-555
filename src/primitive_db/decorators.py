@@ -1,5 +1,6 @@
 # src/primitive_db/decorators.py
 import time
+
 import prompt
 
 
@@ -11,7 +12,7 @@ def handle_db_errors(func):
         try:
             return func(*args, **kwargs)
         except FileNotFoundError:
-            print("Ошибка: Файл данных не найден. Возможно, база данных не инициализирована.")
+            print("Ошибка: Файл данных не найден. Возможно, база данных не инициализирована.") # noqa: E501
         except KeyError as e:
             print(f"Ошибка: Таблица или столбец {e} не найден.")
         except ValueError as e:
@@ -28,7 +29,7 @@ def confirm_action(action_name):
     """
     def decorator(func):
         def wrapper(*args, **kwargs):
-            _answer = prompt.string(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ').strip().lower()
+            _answer = prompt.string(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ').strip().lower() # noqa: E501
             if _answer != "y":
                 print("Операция отменена.")
                 return args[0] if args else None

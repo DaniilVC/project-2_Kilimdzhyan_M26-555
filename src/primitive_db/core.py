@@ -1,7 +1,6 @@
 # src/primitive_db/core.py
-from .decorators import handle_db_errors, confirm_action, log_time, create_cacher
-
-SUPPORTED_TYPES = {"int", "str", "bool"}
+from .constants import SUPPORTED_TYPES
+from .decorators import confirm_action, create_cacher, handle_db_errors, log_time
 
 select_cacher = create_cacher()
 
@@ -131,7 +130,8 @@ def select(table_data: list[dict], where_clause: dict | None = None) -> list[dic
     def _do_select():
         if not where_clause:
             return table_data
-        return [_r for _r in table_data if all(_r.get(_k) == _v for _k, _v in where_clause.items())]
+        return [_r for _r in table_data if all(_r.get(_k) == _v for _k, 
+                                               _v in where_clause.items())]
     
     return select_cacher(_key, _do_select)
 
@@ -154,6 +154,7 @@ def delete(table_data: list[dict], where_clause: dict) -> list[dict]:
     """
     Удаляет записи по where_clause
     """
-    _result = [_r for _r in table_data if not all(_r.get(_k) == _v for _k, _v in where_clause.items())]
+    _result = [_r for _r in table_data if not all(_r.get(_k) == _v for _k, 
+                                                  _v in where_clause.items())]
     select_cacher.clear()
     return _result
