@@ -1,9 +1,0 @@
-{
-    "user": {
-        "columns": {
-            "ID": "int",
-            "username": "str",
-            "number": "int"
-        }
-    }
-}
