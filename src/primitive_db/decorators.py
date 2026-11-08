@@ -32,7 +32,7 @@ def confirm_action(action_name):
             _answer = prompt.string(f'Вы уверены, что хотите выполнить "{action_name}"? [y/n]: ').strip().lower() # noqa: E501
             if _answer != "y":
                 print("Операция отменена.")
-                return args[0] if args else None
+                return None
             return func(*args, **kwargs)
         return wrapper
     return decorator

@@ -1,0 +1,9 @@
+{
+    "users": {
+        "columns": {
+            "ID": "int",
+            "name": "str",
+            "age": "int"
+        }
+    }
+}

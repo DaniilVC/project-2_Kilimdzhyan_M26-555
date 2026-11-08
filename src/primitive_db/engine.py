@@ -181,8 +181,9 @@ def run() -> None:
                     continue
 
                 _result = update(_table_data, _set_clause, _where_clause)
-                save_table_data(_table_name, _result)
-                print(f'Запись в таблице "{_table_name}" успешно обновлена.')
+                if _result is not None:
+                    save_table_data(_table_name, _result)
+                    print(f'Запись в таблице "{_table_name}" успешно обновлена.')
 
             case "delete":
                 # delete from <table> where col = val
@@ -204,8 +205,9 @@ def run() -> None:
                     continue
 
                 _result = delete(_table_data, _where_clause)
-                save_table_data(_table_name, _result)
-                print(f'Запись успешно удалена из таблицы "{_table_name}".')
+                if _result is not None:
+                    save_table_data(_table_name, _result)
+                    print(f'Запись успешно удалена из таблицы "{_table_name}".')
 
             case _:
                 print(f"Функции {_command} нет. Попробуйте снова.")
