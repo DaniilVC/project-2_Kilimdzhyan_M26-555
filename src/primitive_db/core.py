@@ -1,7 +1,12 @@
 # src/primitive_db/core.py
+from .decorators import handle_db_errors, confirm_action, log_time, create_cacher
+
 SUPPORTED_TYPES = {"int", "str", "bool"}
 
+select_cacher = create_cacher()
 
+
+@handle_db_errors
 def create_table(metadata: dict, table_name: str, columns: list[str]) -> dict | None:
     """
     Создаёт таблицу в метаданных
@@ -25,12 +30,16 @@ def create_table(metadata: dict, table_name: str, columns: list[str]) -> dict | 
 
         _parsed_columns[_col_name] = _col_type
     metadata[table_name] = {"columns": _parsed_columns}
+    select_cacher.clear()
+
     _columns_str = ", ".join(f"{_n}:{_t}" for _n, _t in _parsed_columns.items())
     print(f'Таблица "{table_name}" успешно создана со столбцами: {_columns_str}')
 
     return metadata
 
 
+@handle_db_errors
+@confirm_action("удаление таблицы")
 def drop_table(metadata: dict, table_name: str) -> dict | None:
     """
     Удаляет таблицу из метаданных
@@ -40,6 +49,7 @@ def drop_table(metadata: dict, table_name: str) -> dict | None:
         return None
 
     del metadata[table_name]
+    select_cacher.clear()
     print(f'Таблица "{table_name}" успешно удалена.')
 
     return metadata
@@ -57,6 +67,7 @@ def list_tables(metadata: dict) -> None:
         print(f"- {_table_name}")
 
 
+@handle_db_errors
 def info(metadata: dict, table_name: str, table_data: list[dict]) -> None:
     """
     Выводит информацию о таблице
@@ -72,6 +83,8 @@ def info(metadata: dict, table_name: str, table_data: list[dict]) -> None:
     print(f"Количество записей: {len(table_data)}")
 
 
+@handle_db_errors
+@log_time
 def insert(metadata: dict, table_name: str, values: list[str]) -> list[dict] | None:
     """
     Добавляет новую запись в таблицу
@@ -103,20 +116,27 @@ def insert(metadata: dict, table_name: str, values: list[str]) -> list[dict] | N
     _record.update(_typed_values)
     _table_data.append(_record)
 
+    select_cacher.clear()
     print(f'Запись с ID={_new_id} успешно добавлена в таблицу "{table_name}".')
     return _table_data
 
 
+@log_time
 def select(table_data: list[dict], where_clause: dict | None = None) -> list[dict]:
     """
     Возвращает записи, фильтрует по where_clause если задан
     """
-    if not where_clause:
-        return table_data
-    return [_r for _r in table_data if all(_r.get(_k) == _v for _k, 
-                                           _v in where_clause.items())]
+    _key = tuple(sorted(where_clause.items())) if where_clause else ()
+    
+    def _do_select():
+        if not where_clause:
+            return table_data
+        return [_r for _r in table_data if all(_r.get(_k) == _v for _k, _v in where_clause.items())]
+    
+    return select_cacher(_key, _do_select)
 
 
+@handle_db_errors
 def update(table_data: list[dict], set_clause: dict, where_clause: dict) -> list[dict]:
     """
     Обновляет записи по where_clause согласно set_clause
@@ -124,12 +144,16 @@ def update(table_data: list[dict], set_clause: dict, where_clause: dict) -> list
     for _record in table_data:
         if all(_record.get(_k) == _v for _k, _v in where_clause.items()):
             _record.update(set_clause)
+    select_cacher.clear()
     return table_data
 
 
+@handle_db_errors
+@confirm_action("удаление записи")
 def delete(table_data: list[dict], where_clause: dict) -> list[dict]:
     """
     Удаляет записи по where_clause
     """
-    return [_r for _r in table_data if not all(_r.get(_k) == _v for _k, 
-                                               _v in where_clause.items())]
+    _result = [_r for _r in table_data if not all(_r.get(_k) == _v for _k, _v in where_clause.items())]
+    select_cacher.clear()
+    return _result
